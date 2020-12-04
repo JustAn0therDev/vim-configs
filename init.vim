@@ -1,7 +1,7 @@
 call plug#begin()
-" Plug 'morhetz/gruvbox'
-" autocmd vimenter * colorscheme gruvbox
-" set bg=dark
+Plug 'morhetz/gruvbox'
+autocmd vimenter * colorscheme gruvbox
+set bg=dark
 
 syntax on
 
