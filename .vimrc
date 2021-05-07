@@ -6,9 +6,9 @@ set nobackup
 set nowritebackup  
 set noswapfile
 set number
-colorscheme synthwave
+colorscheme pablo
 
-" Remove the settings from here on if not in a Unix-based system
+" Remove this font setting if you're in a Unix-based system, this should be here exclusively for gVim.
 set guifont=Consolas:h14
 
 " Vim with all enhancements
