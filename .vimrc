@@ -10,7 +10,7 @@ set background=dark
 colorscheme synthwave
 
 " Remove this font setting if you're in a Unix-based system, this should be here exclusively for gVim.
-set guifont=Consolas:h14
+set guifont=Consolas:h11
 
 " Vim with all enhancements
 source $VIMRUNTIME/vimrc_example.vim
