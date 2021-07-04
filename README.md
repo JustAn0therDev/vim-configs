@@ -9,7 +9,7 @@ Install [vim-plug](https://github.com/junegunn/vim-plug). This will enable you t
 
 Start up VIM (or restart if it was running) and run the command: `:PlugInstall`. This should install all of the plugins without any issues.
 
-After that, install the [space-vim-theme](https://github.com/liuchengxu/space-vim-theme) from by using `vim-plug` or just use the file in here. Copy this file to the `colors` directory (which should something like `~/.vim/colors`) and you'll be ready to go.
+After that, install the [space-vim-theme](https://github.com/liuchengxu/space-vim-theme) by using `vim-plug` or just use the file in here. Copy this file to the `colors` directory (which should something like `~/.vim/colors`) and you'll be ready to go.
 
 ### For "fullscreen mode" VIM on Windows:
 This repo contains a `.dll` file named `gvimfullscreen.dll`. Put it in the main gVim directory (the one in "Program Files") and run the program again. Your VIM should be in fullscreen now. If you don't want it to run in fullscreen mode just don't download the file.
