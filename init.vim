@@ -49,20 +49,14 @@ Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 " OmniSharp for C# linting
 Plug 'OmniSharp/omnisharp-vim'
 
-" Typescript linting
-Plug 'leafgarland/typescript-vim'
-
 " Basic syntax checking
 Plug 'vim-syntastic/syntastic'
-
-" Space vim Plug
-Plug 'liuchengxu/space-vim-theme'
 
 " Asyncomplete for vim
 Plug 'prabirshrestha/asyncomplete.vim'
 Plug 'prabirshrestha/async.vim'
 
-" Gruvbox theme (why not?)
+" Gruvbox theme (its actually pretty good.)
 Plug 'gruvbox-community/gruvbox'
 
 " Autocomplete and LSP configuration
@@ -85,14 +79,16 @@ colorscheme gruvbox
 " nnoremap <silent> <C-n> <cmd>lua vim.lsp.buf.diagnostic.goto_next()<CR>
 " nnoremap <silent> <C-p> <cmd>lua vim.lsp.buf.diagnostic.goto_prev()<CR>
 
-" Configuring LSP for Python
+" Configuring LSPs.
 lua << EOF
+-- Python
 require'lspconfig'.pyright.setup{}
-EOF
-
-" Now for C and C++
-lua << EOF
+-- C#
+require'lspconfig'.omnisharp.setup{}
+-- C and C++
 require'lspconfig'.clangd.setup{}
+-- Go
+require'lspconfig'.gopls.setup{}
 EOF
 
 lua << EOF
@@ -168,9 +164,7 @@ require'compe'.setup {
     vsnip = true;
     nvim_lsp = true;
     nvim_lua = true;
-    spell = true;
     tags = true;
-    snippets_nvim = true;
     treesitter = true;
   };
 }
@@ -281,4 +275,3 @@ function MyDiff()
     let &shellxquote=l:shxq_sav
   endif
 endfunction
-
