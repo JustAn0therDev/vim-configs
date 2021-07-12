@@ -46,12 +46,6 @@ Plug 'nsf/gocode', { 'tag': 'v.20150303', 'rtp': 'vim' }
 " FZF (Fuzzy finder)
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 
-" OmniSharp for C# linting
-Plug 'OmniSharp/omnisharp-vim'
-
-" Basic syntax checking
-Plug 'vim-syntastic/syntastic'
-
 " Asyncomplete for vim
 Plug 'prabirshrestha/asyncomplete.vim'
 Plug 'prabirshrestha/async.vim'
@@ -84,7 +78,13 @@ lua << EOF
 -- Python
 require'lspconfig'.pyright.setup{}
 -- C#
-require'lspconfig'.omnisharp.setup{}
+local pid = vim.fn.getpid()
+local omnisharp_bin = "C:\\Users\\highl\\omnisharp\\OmniSharp.exe" -- CHANGE PATH IF IT DOESN'T WORK
+
+require'lspconfig'.omnisharp.setup{
+    cmd = { omnisharp_bin, "--languageserver" , "--hostPID", tostring(pid) };
+	filetypes = { "cs", "vb" }
+}
 -- C and C++
 require'lspconfig'.clangd.setup{}
 -- Go
