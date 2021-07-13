@@ -3,7 +3,7 @@ set tabstop=4
 set shiftwidth=4
 set nu
 set expandtab
-set nobackup       
+set nobackup
 set nowritebackup  
 set noswapfile
 set noerrorbells
@@ -76,7 +76,10 @@ colorscheme gruvbox
 " Configuring LSPs.
 lua << EOF
 -- Python
-require'lspconfig'.pyright.setup{}
+require'lspconfig'.pyright.setup{
+	cmd = {"pyright-langserver", "--stdio"};
+	filetypes = { "python" }
+}
 -- C#
 local pid = vim.fn.getpid()
 local omnisharp_bin = "C:\\Users\\highl\\omnisharp\\OmniSharp.exe" -- CHANGE PATH IF IT DOESN'T WORK
@@ -88,7 +91,15 @@ require'lspconfig'.omnisharp.setup{
 -- C and C++
 require'lspconfig'.clangd.setup{}
 -- Go
-require'lspconfig'.gopls.setup{}
+require'lspconfig'.gopls.setup{
+	cmd = { "gopls" };
+	filetypes = { "go", "gomod" }
+}
+-- TypeScript
+require'lspconfig'.tsserver.setup{
+	cmd = { "typescript-language-server", "--stdio" };
+	filetypes = { "javascript", "javascriptreact", "javascript.jsx", "typescript", "typescriptreact", "typescript.tsx" };
+}
 EOF
 
 lua << EOF
