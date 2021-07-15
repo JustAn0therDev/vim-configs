@@ -20,6 +20,8 @@ set nohlsearch
 set scrolloff=8
 set cmdheight=2
 
+:let mapleader = "\<Space>"
+
 " Specify a directory for plugins
 " - For Neovim: stdpath('data') . '/plugged'
 " - Avoid using standard Vim directory names like 'plugin'
@@ -43,8 +45,13 @@ Plug 'fatih/vim-go'
 " Plugin options
 Plug 'nsf/gocode', { 'tag': 'v.20150303', 'rtp': 'vim' }
 
-" FZF (Fuzzy finder)
-Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+" Using Treesitter
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+
+" Using Telescope
+Plug 'nvim-lua/popup.nvim'
+Plug 'nvim-lua/plenary.nvim'
+Plug 'nvim-telescope/telescope.nvim'
 
 " Asyncomplete for vim
 Plug 'prabirshrestha/asyncomplete.vim'
@@ -63,44 +70,57 @@ call plug#end()
 " Setting the installed gruvbox theme as the main colorscheme
 colorscheme gruvbox
 
-"LSP config (the mappings used in the default file don't quite work right)
-" nnoremap <silent> gd <cmd>lua vim.lsp.buf.definition()<CR>
-" nnoremap <silent> gD <cmd>lua vim.lsp.buf.declaration()<CR>
-" nnoremap <silent> gr <cmd>lua vim.lsp.buf.references()<CR>
-" nnoremap <silent> gi <cmd>lua vim.lsp.buf.definition()<CR>
-" nnoremap <silent> K <cmd>lua vim.lsp.buf.hover()<CR>
-" nnoremap <silent> <C-k> <cmd>lua vim.lsp.buf.signature_help()<CR>
-" nnoremap <silent> <C-n> <cmd>lua vim.lsp.buf.diagnostic.goto_next()<CR>
-" nnoremap <silent> <C-p> <cmd>lua vim.lsp.buf.diagnostic.goto_prev()<CR>
-
 " Configuring LSPs.
 lua << EOF
+
 -- Python
 require'lspconfig'.pyright.setup{
 	cmd = {"pyright-langserver", "--stdio"};
 	filetypes = { "python" }
 }
+
 -- C#
 local pid = vim.fn.getpid()
-local omnisharp_bin = "C:\\Users\\highl\\omnisharp\\OmniSharp.exe" -- CHANGE PATH IF IT DOESN'T WORK
+local omnisharp_bin = "C:\\Users\\highl\\omnisharp-win-x64\\OmniSharp.exe" -- CHANGE PATH IF IT DOESN'T WORK
 
 require'lspconfig'.omnisharp.setup{
     cmd = { omnisharp_bin, "--languageserver" , "--hostPID", tostring(pid) };
 	filetypes = { "cs", "vb" }
 }
+
 -- C and C++
 require'lspconfig'.clangd.setup{}
+
 -- Go
 require'lspconfig'.gopls.setup{
 	cmd = { "gopls" };
 	filetypes = { "go", "gomod" }
 }
+
 -- TypeScript
 require'lspconfig'.tsserver.setup{
 	cmd = { "typescript-language-server", "--stdio" };
 	filetypes = { "javascript", "javascriptreact", "javascript.jsx", "typescript", "typescriptreact", "typescript.tsx" };
 }
+
+-- Godot - GDScript
+require'lspconfig'.gdscript.setup{
+    cmd = { "nc", "localhost", "6008" };
+    filetypes = { "gdscript", "gd", "gdscript3" }
+}
 EOF
+
+" Find files using Telescope command-line sugar.
+nnoremap <leader>ff<cmd>Telescope find_files<cr>
+nnoremap <leader>fg<cmd>Telescope live_grep<cr>
+nnoremap <leader>fb<cmd>Telescope buffers<cr>
+nnoremap <leader>fh<cmd>Telescope help_tags<cr>
+
+" Using Lua functions
+" nnoremap <leader>ff <cmd>lua require('telescope.builtin').find_files()<cr>
+" nnoremap <leader>fg <cmd>lua require('telescope.builtin').live_grep()<cr>
+" nnoremap <leader>fb <cmd>lua require('telescope.builtin').buffers()<cr>
+" nnoremap <leader>fh <cmd>lua require('telescope.builtin').help_tags()<cr>
 
 lua << EOF
 local nvim_lsp = require('lspconfig')
@@ -223,66 +243,59 @@ vim.api.nvim_set_keymap("i", "<S-Tab>", "v:lua.s_tab_complete()", {expr = true})
 vim.api.nvim_set_keymap("s", "<S-Tab>", "v:lua.s_tab_complete()", {expr = true})
 EOF
 
-let mapleader = " "
-nnoremap <leader>ps :lua require('telescope.builtin').grep_string({ search = vim.fn.input("Grep For > ") })
-
-"Find usages in C#
-let g:OmniSharp_selector_findusages = 'fzf'
-let g:OmniSharp_selector_ui = 'fzf'
-
 set completeopt=menuone,noinsert,noselect,preview
 let g:asyncomplete_auto_popup = 1
 let g:asyncomplete_auto_completeopt = 0
 let g:asyncomplete_force_refresh_on_context_changed = 1
-
-let g:OmniSharp_server_stdio = 1
-let g:OmniSharp_highlight_types = 2
-
-" if using ultisnips, set g:OmniSharp_want_snippet to 1
-let g:OmniSharp_want_snippet = 1
-
-" Checks C# syntax
-let g:syntastic_cs_checkers = ['code_checker']
 
 " Configuring syntastic for Golang
 let g:go_diagnostics_level = 2
 let g:syntastic_go_checkers = ['golint', 'govet', 'errcheck']
 let g:syntastic_mode_map = { 'mode': 'active', 'passive_filetypes': ['go'] }
 
-" Use the internal diff if available.
-" Otherwise use the special 'diffexpr' for Windows.
-if &diffopt !~# 'internal'
-  set diffexpr=MyDiff()
-endif
-function MyDiff()
-  let opt = '-a --binary '
-  if &diffopt =~ 'icase' | let opt = opt . '-i ' | endif
-  if &diffopt =~ 'iwhite' | let opt = opt . '-b ' | endif
-  let arg1 = v:fname_in
-  if arg1 =~ ' ' | let arg1 = '"' . arg1 . '"' | endif
-  let arg1 = substitute(arg1, '!', '\!', 'g')
-  let arg2 = v:fname_new
-  if arg2 =~ ' ' | let arg2 = '"' . arg2 . '"' | endif
-  let arg2 = substitute(arg2, '!', '\!', 'g')
-  let arg3 = v:fname_out
-  if arg3 =~ ' ' | let arg3 = '"' . arg3 . '"' | endif
-  let arg3 = substitute(arg3, '!', '\!', 'g')
-  if $VIMRUNTIME =~ ' '
-    if &sh =~ '\<cmd'
-      if empty(&shellxquote)
-        let l:shxq_sav = ''
-        set shellxquote&
-      endif
-      let cmd = '"' . $VIMRUNTIME . '\diff"'
-    else
-      let cmd = substitute($VIMRUNTIME, ' ', '" ', '') . '\diff"'
-    endif
-  else
-    let cmd = $VIMRUNTIME . '\diff'
-  endif
-  let cmd = substitute(cmd, '!', '\!', 'g')
-  silent execute '!' . cmd . ' ' . opt . arg1 . ' ' . arg2 . ' > ' . arg3
-  if exists('l:shxq_sav')
-    let &shellxquote=l:shxq_sav
-  endif
-endfunction
+lua << EOF
+require('telescope').setup{
+  defaults = {
+    vimgrep_arguments = {
+      'rg',
+      '--color=never',
+      '--no-heading',
+      '--with-filename',
+      '--line-number',
+      '--column',
+      '--smart-case'
+    },
+    prompt_prefix = "> ",
+    selection_caret = "> ",
+    entry_prefix = "  ",
+    initial_mode = "insert",
+    selection_strategy = "reset",
+    sorting_strategy = "descending",
+    layout_strategy = "horizontal",
+    layout_config = {
+      horizontal = {
+        mirror = false,
+      },
+      vertical = {
+        mirror = false,
+      },
+    },
+    file_sorter =  require'telescope.sorters'.get_fuzzy_file,
+    file_ignore_patterns = {},
+    generic_sorter =  require'telescope.sorters'.get_generic_fuzzy_sorter,
+    winblend = 0,
+    border = {},
+    borderchars = { '─', '│', '─', '│', '╭', '╮', '╯', '╰' },
+    color_devicons = true,
+    use_less = true,
+    path_display = {},
+    set_env = { ['COLORTERM'] = 'truecolor' }, -- default = nil,
+    file_previewer = require'telescope.previewers'.vim_buffer_cat.new,
+    grep_previewer = require'telescope.previewers'.vim_buffer_vimgrep.new,
+    qflist_previewer = require'telescope.previewers'.vim_buffer_qflist.new,
+
+    -- Developer configurations: Not meant for general override
+    buffer_previewer_maker = require'telescope.previewers'.buffer_previewer_maker
+  }
+}
+EOF
