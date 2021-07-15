@@ -15,4 +15,10 @@ I'm using Neovim now, so at least Neovim 0.5 must be installed.
 
 ### For Telescope:
 
-For telescope, `sharkdp/fd` must be installed for it to work when looking for files. It can be installed using `apt` on Debian distros, and on `scoop` or `choco` on Windows.
+For telescope, `sharkdp/fd` must be installed for it to work when looking for files. It can be installed using `apt` on Debian distros, and on `scoop` or `choco` on Windows:
+
+`choco install fd`
+
+`BurntSushi/ripgrep` should also be installed for the `Telescope live_grep` command to work (looks inside files). To install it:
+
+`choco install ripgrep`
