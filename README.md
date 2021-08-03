@@ -19,6 +19,10 @@ For telescope, `sharkdp/fd` must be installed for it to work when looking for fi
 
 `choco install fd`
 
+On ubuntu you may use:
+
+`sudo apt install fd-find`
+
 `BurntSushi/ripgrep` should also be installed for the `Telescope live_grep` command to work (looks inside files). To install it:
 
 `choco install ripgrep`
