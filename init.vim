@@ -19,6 +19,7 @@ set incsearch
 set nohlsearch
 set scrolloff=8
 set cmdheight=2
+set termguicolors
 
 :let mapleader = "\<Space>"
 
@@ -57,8 +58,8 @@ Plug 'nvim-telescope/telescope.nvim'
 Plug 'prabirshrestha/asyncomplete.vim'
 Plug 'prabirshrestha/async.vim'
 
-" Gruvbox theme (its actually pretty good.)
-Plug 'gruvbox-community/gruvbox'
+" Base16 theme
+Plug 'chriskempson/base16-vim'
 
 " Autocomplete and LSP configuration
 Plug 'neovim/nvim-lspconfig'
@@ -67,25 +68,24 @@ Plug 'hrsh7th/nvim-compe'
 " Initialize plugin system
 call plug#end()
 
-" Setting the installed gruvbox theme as the main colorscheme
-colorscheme gruvbox
+colorscheme base16-default-dark
 
 " Configuring LSPs.
 lua << EOF
 
--- Python
-require'lspconfig'.pyright.setup{
-	cmd = {"pyright-langserver", "--stdio"};
-	filetypes = { "python" }
+-- Python - Using pylsp now
+require'lspconfig'.pylsp.setup{
+    cmd = { "pylsp" };
+	filetypes = { "python" };
 }
 
 -- C#
 local pid = vim.fn.getpid()
-local omnisharp_bin = "C:\\Users\\highl\\omnisharp-win-x64\\OmniSharp.exe" -- CHANGE PATH IF IT DOESN'T WORK
+local omnisharp_bin = "" -- Change the path to match your machine.
 
 require'lspconfig'.omnisharp.setup{
     cmd = { omnisharp_bin, "--languageserver" , "--hostPID", tostring(pid) };
-	filetypes = { "cs", "vb" }
+	filetypes = { "cs" }
 }
 
 -- C and C++
