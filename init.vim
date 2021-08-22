@@ -21,29 +21,19 @@ set scrolloff=8
 set cmdheight=2
 set termguicolors
 
-:let mapleader = "\<Space>"
+let mapleader = " "
 
-" Specify a directory for plugins
-" - For Neovim: stdpath('data') . '/plugged'
-" - Avoid using standard Vim directory names like 'plugin'
 call plug#begin('~/.vim/plugged')
 
-" Make sure you use single quotes
-
-" Shorthand notation; fetches https://github.com/junegunn/vim-easy-align
 Plug 'junegunn/vim-easy-align'
 
-" On-demand loading
 Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
 Plug 'tpope/vim-fireplace', { 'for': 'clojure' }
 
-" Using a non-default branch
 Plug 'rdnetto/YCM-Generator', { 'branch': 'stable' }
 
-" Using a tagged release; wildcard allowed (requires git 1.9.2 or above)
 Plug 'fatih/vim-go'
 
-" Plugin options
 Plug 'nsf/gocode', { 'tag': 'v.20150303', 'rtp': 'vim' }
 
 " Using Treesitter
@@ -111,16 +101,10 @@ require'lspconfig'.gdscript.setup{
 EOF
 
 " Find files using Telescope command-line sugar.
-nnoremap <leader>ff<cmd>Telescope find_files<cr>
-nnoremap <leader>fg<cmd>Telescope live_grep<cr>
-nnoremap <leader>fb<cmd>Telescope buffers<cr>
-nnoremap <leader>fh<cmd>Telescope help_tags<cr>
-
-" Using Lua functions
-" nnoremap <leader>ff <cmd>lua require('telescope.builtin').find_files()<cr>
-" nnoremap <leader>fg <cmd>lua require('telescope.builtin').live_grep()<cr>
-" nnoremap <leader>fb <cmd>lua require('telescope.builtin').buffers()<cr>
-" nnoremap <leader>fh <cmd>lua require('telescope.builtin').help_tags()<cr>
+nnoremap <leader>ff :Telescope find_files<cr>
+nnoremap <leader>fg :Telescope live_grep<cr>
+nnoremap <leader>fb :Telescope buffers<cr>
+nnoremap <leader>fh :Telescope help_tags<cr>
 
 lua << EOF
 local nvim_lsp = require('lspconfig')
@@ -221,7 +205,7 @@ _G.tab_complete = function()
   elseif vim.fn.call("vsnip#available", {1}) == 1 then
     return t "<Plug>(vsnip-expand-or-jump)"
   elseif check_back_space() then
-    return t "<Tab>"
+    return t "<C-h>"
   else
     return vim.fn['compe#complete']()
   end
@@ -233,14 +217,9 @@ _G.s_tab_complete = function()
     return t "<Plug>(vsnip-jump-prev)"
   else
     -- If <S-Tab> is not working in your terminal, change it to <C-h>
-    return t "<S-Tab>"
+    return t "<C-h>"
   end
 end
-
-vim.api.nvim_set_keymap("i", "<Tab>", "v:lua.tab_complete()", {expr = true})
-vim.api.nvim_set_keymap("s", "<Tab>", "v:lua.tab_complete()", {expr = true})
-vim.api.nvim_set_keymap("i", "<S-Tab>", "v:lua.s_tab_complete()", {expr = true})
-vim.api.nvim_set_keymap("s", "<S-Tab>", "v:lua.s_tab_complete()", {expr = true})
 EOF
 
 set completeopt=menuone,noinsert,noselect,preview
