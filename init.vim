@@ -19,21 +19,30 @@ set incsearch
 set nohlsearch
 set scrolloff=8
 set cmdheight=2
-set termguicolors
 
-let mapleader = " "
+let mapleader = " " " mapping a space keypress to leader
 
+" Specify a directory for plugins
+" - For Neovim: stdpath('data') . '/plugged'
+" - Avoid using standard Vim directory names like 'plugin'
 call plug#begin('~/.vim/plugged')
 
+" Make sure you use single quotes
+
+" Shorthand notation; fetches https://github.com/junegunn/vim-easy-align
 Plug 'junegunn/vim-easy-align'
 
+" On-demand loading
 Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
 Plug 'tpope/vim-fireplace', { 'for': 'clojure' }
 
+" Using a non-default branch
 Plug 'rdnetto/YCM-Generator', { 'branch': 'stable' }
 
+" Using a tagged release; wildcard allowed (requires git 1.9.2 or above)
 Plug 'fatih/vim-go'
 
+" Plugin options
 Plug 'nsf/gocode', { 'tag': 'v.20150303', 'rtp': 'vim' }
 
 " Using Treesitter
@@ -48,34 +57,40 @@ Plug 'nvim-telescope/telescope.nvim'
 Plug 'prabirshrestha/asyncomplete.vim'
 Plug 'prabirshrestha/async.vim'
 
-" Base16 theme
-Plug 'chriskempson/base16-vim'
+Plug 'gruvbox-community/gruvbox'
 
 " Autocomplete and LSP configuration
 Plug 'neovim/nvim-lspconfig'
 Plug 'hrsh7th/nvim-compe'
 
+" Highlight for GDScript since the LSP for Godot didn't work and I didn't
+" configure it yet.
+Plug 'calviken/vim-gdscript3'
+
+" Airline to make a nice line appear on the bottom of the screen.
+Plug 'vim-airline/vim-airline'
+
 " Initialize plugin system
 call plug#end()
 
-colorscheme base16-default-dark
+" Setting the installed gruvbox theme as the main colorscheme
+colorscheme gruvbox
 
 " Configuring LSPs.
 lua << EOF
 
--- Python - Using pylsp now
-require'lspconfig'.pylsp.setup{
-    cmd = { "pylsp" };
-	filetypes = { "python" };
+-- Python
+require'lspconfig'.pyright.setup{
+	cmd = {"pyright-langserver", "--stdio"};
+	filetypes = { "python" }
 }
 
 -- C#
 local pid = vim.fn.getpid()
-local omnisharp_bin = "" -- Change the path to match your machine.
+local omnisharp_bin = "C:\\Users\\highl\\omnisharp-win-x64\\OmniSharp.exe"
 
 require'lspconfig'.omnisharp.setup{
-    cmd = { omnisharp_bin, "--languageserver" , "--hostPID", tostring(pid) };
-	filetypes = { "cs" }
+    cmd = { omnisharp_bin, "--languageserver", "--hostPID", tostring(pid) };
 }
 
 -- C and C++
@@ -84,7 +99,7 @@ require'lspconfig'.clangd.setup{}
 -- Go
 require'lspconfig'.gopls.setup{
 	cmd = { "gopls" };
-	filetypes = { "go", "gomod" }
+	filetypes = { "go", "gomod" };
 }
 
 -- TypeScript
@@ -94,9 +109,9 @@ require'lspconfig'.tsserver.setup{
 }
 
 -- Godot - GDScript
+-- Nao funciona e nao sei por que.
 require'lspconfig'.gdscript.setup{
-    cmd = { "nc", "localhost", "6008" };
-    filetypes = { "gdscript", "gd", "gdscript3" }
+    filetypes = { "gdscript", "gd", "gdscript3" };
 }
 EOF
 
@@ -221,6 +236,7 @@ _G.s_tab_complete = function()
     return t "<C-h>"
   end
 end
+
 EOF
 
 set completeopt=menuone,noinsert,noselect,preview
