@@ -57,7 +57,8 @@ Plug 'nvim-telescope/telescope.nvim'
 Plug 'prabirshrestha/asyncomplete.vim'
 Plug 'prabirshrestha/async.vim'
 
-Plug 'gruvbox-community/gruvbox'
+" XCode theme for Neovim
+Plug 'arzg/vim-colors-xcode'
 
 " Autocomplete and LSP configuration
 Plug 'neovim/nvim-lspconfig'
@@ -67,14 +68,10 @@ Plug 'hrsh7th/nvim-compe'
 " configure it yet.
 Plug 'calviken/vim-gdscript3'
 
-" Airline to make a nice line appear on the bottom of the screen.
-Plug 'vim-airline/vim-airline'
-
 " Initialize plugin system
 call plug#end()
 
-" Setting the installed gruvbox theme as the main colorscheme
-colorscheme gruvbox
+colorscheme xcodedark
 
 " Configuring LSPs.
 lua << EOF
