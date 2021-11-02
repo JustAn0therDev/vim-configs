@@ -39,7 +39,6 @@ Plug 'tpope/vim-fireplace', { 'for': 'clojure' }
 " Using a non-default branch
 Plug 'rdnetto/YCM-Generator', { 'branch': 'stable' }
 
-" Using a tagged release; wildcard allowed (requires git 1.9.2 or above)
 Plug 'fatih/vim-go'
 
 " Plugin options
@@ -57,12 +56,13 @@ Plug 'nvim-telescope/telescope.nvim'
 Plug 'prabirshrestha/asyncomplete.vim'
 Plug 'prabirshrestha/async.vim'
 
-" XCode theme for Neovim
-Plug 'arzg/vim-colors-xcode'
+" Tokyo Night theme
+Plug 'folke/tokyonight'
 
 " Autocomplete and LSP configuration
 Plug 'neovim/nvim-lspconfig'
 Plug 'hrsh7th/nvim-compe'
+Plug 'williamboman/nvim-lsp-installer'
 
 " Highlight for GDScript since the LSP for Godot didn't work and I didn't
 " configure it yet.
@@ -71,47 +71,19 @@ Plug 'calviken/vim-gdscript3'
 " Initialize plugin system
 call plug#end()
 
-colorscheme xcodedark
+colorscheme tokyonight
 
 " Configuring LSPs.
 lua << EOF
 
--- Python
-require'lspconfig'.pyright.setup{
-	cmd = {"pyright-langserver", "--stdio"};
-	filetypes = { "python" }
-}
+local lsp_installer = require("nvim-lsp-installer")
 
--- C#
-local pid = vim.fn.getpid()
-local omnisharp_bin = "C:\\Users\\highl\\omnisharp-win-x64\\OmniSharp.exe"
+lsp_installer.on_server_ready(function(server)
+    local opts = {}
+    server:setup(opts)
+end)
 
-require'lspconfig'.omnisharp.setup{
-    cmd = { omnisharp_bin, "--languageserver", "--hostPID", tostring(pid) };
-}
-
--- C and C++
-require'lspconfig'.clangd.setup{}
-
--- Go
-require'lspconfig'.gopls.setup{
-	cmd = { "gopls" };
-	filetypes = { "go", "gomod" };
-}
-
--- TypeScript
-require'lspconfig'.tsserver.setup{
-	cmd = { "typescript-language-server", "--stdio" };
-	filetypes = { "javascript", "javascriptreact", "javascript.jsx", "typescript", "typescriptreact", "typescript.tsx" };
-}
-
--- Godot - GDScript
--- Nao funciona e nao sei por que.
-require'lspconfig'.gdscript.setup{
-    filetypes = { "gdscript", "gd", "gdscript3" };
-}
 EOF
-
 " Find files using Telescope command-line sugar.
 nnoremap <leader>ff <cmd>Telescope find_files<cr>
 nnoremap <leader>fg <cmd>Telescope live_grep<cr>
