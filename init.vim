@@ -57,7 +57,7 @@ Plug 'prabirshrestha/asyncomplete.vim'
 Plug 'prabirshrestha/async.vim'
 
 " Tokyo Night theme
-Plug 'folke/tokyonight'
+Plug 'folke/tokyonight.nvim'
 
 " Autocomplete and LSP configuration
 Plug 'neovim/nvim-lspconfig'
