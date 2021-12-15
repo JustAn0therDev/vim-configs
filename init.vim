@@ -39,6 +39,7 @@ Plug 'tpope/vim-fireplace', { 'for': 'clojure' }
 " Using a non-default branch
 Plug 'rdnetto/YCM-Generator', { 'branch': 'stable' }
 
+" Using a tagged release; wildcard allowed (requires git 1.9.2 or above)
 Plug 'fatih/vim-go'
 
 " Plugin options
@@ -56,8 +57,9 @@ Plug 'nvim-telescope/telescope.nvim'
 Plug 'prabirshrestha/asyncomplete.vim'
 Plug 'prabirshrestha/async.vim'
 
-" Tokyo Night theme
-Plug 'folke/tokyonight'
+" Tokyo Night theme.
+" Plug 'folke/tokyonight.nvim'
+Plug 'tomasr/molokai'
 
 " Autocomplete and LSP configuration
 Plug 'neovim/nvim-lspconfig'
@@ -71,12 +73,15 @@ Plug 'calviken/vim-gdscript3'
 " Initialize plugin system
 call plug#end()
 
-colorscheme tokyonight
+" Setting the installed gruvbox theme as the main colorscheme
+colorscheme molokai
+
+let g:molokai_original = 1
 
 " Configuring LSPs.
 lua << EOF
-
-local lsp_installer = require("nvim-lsp-installer")
+-- By far the best way to use LSPs with Neovim.
+local lsp_installer = require('nvim-lsp-installer')
 
 lsp_installer.on_server_ready(function(server)
     local opts = {}
@@ -84,6 +89,7 @@ lsp_installer.on_server_ready(function(server)
 end)
 
 EOF
+
 " Find files using Telescope command-line sugar.
 nnoremap <leader>ff <cmd>Telescope find_files<cr>
 nnoremap <leader>fg <cmd>Telescope live_grep<cr>
